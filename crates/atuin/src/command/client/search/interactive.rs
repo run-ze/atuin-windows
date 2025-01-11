@@ -1098,6 +1098,10 @@ pub async fn history(
 
     let mut results = app.query_results(&mut db, settings.smart_sort).await?;
 
+    if settings.inline_height > 0 {
+        terminal.clear()?;
+    }
+
     let mut stats: Option<HistoryStats> = None;
     let accept;
     let result = 'render: loop {
@@ -1180,7 +1184,11 @@ pub async fn history(
         InputAction::Accept(index) if index < results.len() => {
             let mut command = results.swap_remove(index).command;
             if accept
-                && (utils::is_zsh() || utils::is_fish() || utils::is_bash() || utils::is_xonsh() || utils::is_powershell())
+                && (utils::is_zsh()
+                    || utils::is_fish()
+                    || utils::is_bash()
+                    || utils::is_xonsh()
+                    || utils::is_powershell())
             {
                 command = String::from("__atuin_accept__:") + &command;
             }
