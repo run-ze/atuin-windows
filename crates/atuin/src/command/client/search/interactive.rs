@@ -33,8 +33,7 @@ use ratatui::{
         cursor::SetCursorStyle,
         event::{
             self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyModifiers,
-            KeyboardEnhancementFlags, MouseEvent, PopKeyboardEnhancementFlags,
-            PushKeyboardEnhancementFlags,
+            MouseEvent,
         },
         execute, terminal,
     },
@@ -44,6 +43,11 @@ use ratatui::{
     text::{Line, Span, Text},
     widgets::{block::Title, Block, BorderType, Borders, Padding, Paragraph, Tabs},
     Frame, Terminal, TerminalOptions, Viewport,
+};
+
+#[cfg(not(target_os = "windows"))]
+use ratatui::crossterm::event::{
+    KeyboardEnhancementFlags, PopKeyboardEnhancementFlags, PushKeyboardEnhancementFlags,
 };
 
 const TAB_TITLES: [&str; 2] = ["Search", "Inspect"];
