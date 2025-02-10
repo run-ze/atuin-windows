@@ -60,6 +60,38 @@ New-Module -Name Atuin -ScriptBlock {
         return $line
     }
 
+    function RunAtuinSearchProcess {
+        param([string]$ExtraArgs = "")
+
+        $line = $null
+        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$null)
+
+        $startInfo = New-Object -TypeName System.Diagnostics.ProcessStartInfo
+        $startInfo.FileName = "atuin"
+        $startInfo.Arguments = "search -i $ExtraArgs -- $line"
+        $startInfo.UseShellExecute = $false
+        $startInfo.CreateNoWindow = $true
+        $startInfo.RedirectStandardInput = $true
+        $startInfo.RedirectStandardOutput = $true
+        $startInfo.RedirectStandardError = $true
+        $startInfo.StandardInputEncoding = [System.Text.Encoding]::UTF8
+        $startInfo.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+        $startInfo.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+        $startInfo.EnvironmentVariables["ATUIN_SHELL_POWERSHELL"] = "true"
+
+        $process = New-Object -TypeName System.Diagnostics.Process
+        $process.StartInfo = $startInfo
+        $process.Start()
+
+        [System.Console]::OpenStandardInput().CopyToAsync($process.StandardInput.BaseStream)
+        $process.StandardOutput.BaseStream.CopyToAsync([System.Console]::OpenStandardOutput())
+        $process.StandardError.BaseStream.CopyToAsync([System.Console]::OpenStandardError())
+
+        $process.WaitForExit()
+
+        return ""
+    }
+
     function RunSearch {
         param([string]$ExtraArgs = "")
 
@@ -69,22 +101,24 @@ New-Module -Name Atuin -ScriptBlock {
         # Atuin is started through Start-Process to avoid interfering with the current shell,
         # and to capture its output which is provided in stderr (redirected to a temporary file).
 
-        $suggestion = ""
-        $resultFile = New-TemporaryFile
-        try {
-            $env:ATUIN_SHELL_POWERSHELL = "true"
-            $argString = "search -i $ExtraArgs -- $line"
-            Start-Process -Wait -NoNewWindow -RedirectStandardError $resultFile.FullName -FilePath atuin -ArgumentList $argString
-            $suggestion = (Get-Content -Raw $resultFile -Encoding UTF8 | Out-String).Trim()
-        }
-        finally {
-            $env:ATUIN_SHELL_POWERSHELL = $null
-            Remove-Item $resultFile
-        }
+        #        $suggestion = ""
+        #        $resultFile = New-TemporaryFile
+        #        try {
+        #            $env:ATUIN_SHELL_POWERSHELL = "true"
+        #            $argString = "search -i $ExtraArgs -- $line"
+        #            Start-Process -Wait -NoNewWindow -RedirectStandardError $resultFile.FullName -FilePath atuin -ArgumentList $argString
+        #            $suggestion = (Get-Content -Raw $resultFile -Encoding UTF8 | Out-String).Trim()
+        #        }
+        #        finally {
+        #            $env:ATUIN_SHELL_POWERSHELL = $null
+        #            Remove-Item $resultFile
+        #        }
 
         $previousOutputEncoding = [System.Console]::OutputEncoding
         try {
             [System.Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+            $suggestion = RunAtuinSearchProcess -ExtraArgs $ExtraArgs
 
             # PSReadLine maintains its own cursor position, which will no longer be valid if Atuin scrolls the display in inline mode.
             # Fortunately, InvokePrompt can receive a new Y position and reset the internal state.
