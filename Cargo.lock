@@ -221,7 +221,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "atuin"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "arboard",
  "async-trait",
@@ -230,6 +230,7 @@ dependencies = [
  "atuin-daemon",
  "atuin-dotfiles",
  "atuin-history",
+ "atuin-kv",
  "atuin-scripts",
  "atuin-server",
  "atuin-server-postgres",
@@ -268,7 +269,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-client"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "async-trait",
  "atuin-common",
@@ -323,7 +324,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-common"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "base64 0.22.1",
  "directories",
@@ -343,7 +344,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-daemon"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "atuin-client",
  "atuin-dotfiles",
@@ -362,7 +363,7 @@ dependencies = [
  "tonic",
  "tonic-build",
  "tonic-types",
- "tower 0.4.13",
+ "tower 0.5.2",
  "tracing",
  "tracing-subscriber",
  "uuid",
@@ -370,7 +371,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-dotfiles"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "atuin-client",
  "atuin-common",
@@ -384,7 +385,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-history"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "atuin-client",
  "crossterm",
@@ -396,8 +397,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "atuin-kv"
+version = "18.6.1"
+dependencies = [
+ "atuin-client",
+ "atuin-common",
+ "eyre",
+ "pretty_assertions",
+ "rmp",
+ "sqlx",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "typed-builder",
+]
+
+[[package]]
 name = "atuin-scripts"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "atuin-client",
  "atuin-common",
@@ -419,7 +436,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-server"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "argon2",
  "async-trait",
@@ -441,14 +458,14 @@ dependencies = [
  "serde_json",
  "time",
  "tokio",
- "tower 0.4.13",
+ "tower 0.5.2",
  "tower-http",
  "tracing",
 ]
 
 [[package]]
 name = "atuin-server-database"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "async-trait",
  "atuin-common",
@@ -460,7 +477,7 @@ dependencies = [
 
 [[package]]
 name = "atuin-server-postgres"
-version = "18.6.0-beta.1"
+version = "18.6.1"
 dependencies = [
  "async-trait",
  "atuin-common",
@@ -2565,9 +2582,9 @@ dependencies = [
 
 [[package]]
 name = "minspan"
-version = "0.1.2"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eea6e49e831ee0ee624f0435c357e452f6a68e194335f457a4d1551c09c9a300"
+checksum = "20219d20b3b77f743358539a182e339a6f682e09bb5675f870f320c4a1058c44"
 
 [[package]]
 name = "mio"
